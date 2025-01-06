@@ -68,8 +68,7 @@
     description = "egrqq";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      alacritty
-      # ghostty
+      ghostty
 
       brave
 
@@ -80,7 +79,9 @@
       mpv
       qbittorrent
     ];
+    shell = pkgs.nushell;
   };
+
 
   # define home-manager
   home-manager = {
@@ -99,6 +100,7 @@
   environment.systemPackages = with pkgs; [
     neovim
     helix 
+
     firefox
 
     go
@@ -107,19 +109,33 @@
 
     wget
     git
-
     gnumake
     gcc14
     unzip
     xclip
     ripgrep
     fzf
+
+    nushell
+    starship
+    carapace
+  
   ];
 
-  # hardware = {
-  # opengl.enable = true;
-  # nvidia.modesetting.enable = true;
-  # };
+  # Fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+  ];
+
+  # Configure nvidia graphics
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia.modesetting.enable = true;
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
