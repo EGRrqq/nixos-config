@@ -70,20 +70,27 @@
     packages = with pkgs; [
       vscode
 
+      alacritty
       ghostty
+      tmux
+      tmux-sessionizer
 
       brave
 
       hiddify-app
+      amnezia-vpn
 
       telegram-desktop
       obsidian
       mpv
       qbittorrent
+      obs-studio
     ];
     shell = pkgs.nushell;
   };
 
+  # Enable amnezia background service
+  programs.amnezia-vpn.enable = true;
 
   # define home-manager
   home-manager = {
@@ -124,7 +131,8 @@
     nushell
     starship
     carapace
-  
+    vivid
+
   ];
 
   # Fonts
