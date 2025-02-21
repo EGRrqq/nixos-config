@@ -58,9 +58,20 @@
 
   # Enable flatpak
   services.flatpak.enable = true;
+  systemd.services.flatpak-repo = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.flatpak ];
+    script = ''
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      '';
+  };
 
   # Enable bluetooth
   hardware.bluetooth.enable = true;
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "libtiff-4.0.3-opentoonz"
+  ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.egrqq = {
@@ -72,10 +83,13 @@
 
       alacritty
       ghostty
+      wezterm
       tmux
       tmux-sessionizer
 
       brave
+      vivaldi
+      chromium
 
       hiddify-app
       amnezia-vpn
@@ -84,7 +98,23 @@
       obsidian
       mpv
       qbittorrent
-      obs-studio
+
+      aseprite
+      pixelorama
+      krita
+      gimp-with-plugins
+      inkscape-with-extensions
+      opentoonz
+      blender
+
+      olive-editor
+      # natron
+
+      ardour
+      bespokesynth
+
+      appimage-run
+      gearlever
     ];
     shell = pkgs.nushell;
   };
@@ -125,14 +155,24 @@
     xclip
     ripgrep
     fzf
+    fd
+
     nodejs_23
     corepack_23
+    live-server
+
+    elmPackages.elm
+    gleam
+    erlang_27
+    rebar3
+    inotify-tools
+
+    gnome-tweaks
 
     nushell
     starship
     carapace
     vivid
-
   ];
 
   # Fonts
