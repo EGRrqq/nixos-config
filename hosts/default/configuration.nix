@@ -1,8 +1,12 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# your system. Help is available in the configuration.nix(5) man page, on
+# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, pkgs, inputs, ... }:
+# NixOS-WSL specific options are documented on the NixOS-WSL repository:
+# https://github.com/nix-community/NixOS-WSL
+
+
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports =
@@ -11,9 +15,16 @@
       inputs.home-manager.nixosModules.default
     ];
 
+  wsl = {
+    enable = true;
+    wslConf.automount.root = "/mnt";
+    defaultUser = "nixos";
+    startMenuLaunchers = true;
+  };
+
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # boot.loader.systemd-boot.enable = true;
+  # boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -23,7 +34,7 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  # networking.networkmanager.enable = true;
 
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -53,8 +64,14 @@
   };
 
   # Configure gnome desktop env + display manager
-  services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+  # services.xserver.desktopManager.gnome.enable = true;
+  # services.xserver.displayManager.gdm.enable = true;
+
+       # To use Flatpak you must enable XDG Desktop Portals with xdg.portal.enable.
+xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
 
   # Enable flatpak
   services.flatpak.enable = true;
@@ -67,11 +84,11 @@
   };
 
   # Enable bluetooth
-  hardware.bluetooth.enable = true;
+  # hardware.bluetooth.enable = true;
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "libtiff-4.0.3-opentoonz"
-  ];
+  # nixpkgs.config.permittedInsecurePackages = [
+  #   "libtiff-4.0.3-opentoonz"
+  # ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.egrqq = {
@@ -79,48 +96,12 @@
     description = "egrqq";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      vscode
-
-      alacritty
-      ghostty
-      wezterm
-      tmux
-      tmux-sessionizer
-
-      brave
-      vivaldi
-      chromium
-
-      hiddify-app
-      amnezia-vpn
-
-      telegram-desktop
-      obsidian
-      mpv
-      qbittorrent
-
-      aseprite
-      pixelorama
-      krita
-      gimp-with-plugins
-      inkscape-with-extensions
-      opentoonz
-      blender
-
-      olive-editor
-      # natron
-
-      ardour
-      bespokesynth
-
-      appimage-run
-      gearlever
     ];
     shell = pkgs.nushell;
   };
 
   # Enable amnezia background service
-  programs.amnezia-vpn.enable = true;
+  # programs.amnezia-vpn.enable = true;
 
   # define home-manager
   home-manager = {
@@ -140,8 +121,6 @@
   environment.systemPackages = with pkgs; [
     neovim
     helix 
-
-    firefox
 
     go
     rustc
@@ -167,8 +146,6 @@
     rebar3
     inotify-tools
 
-    gnome-tweaks
-
     nushell
     starship
     carapace
@@ -181,43 +158,43 @@
     nerd-fonts.droid-sans-mono
   ];
 
-  # Enable OpenGL
-  hardware.graphics = {
-    enable = true;
-  };
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
-  hardware.nvidia = {
-    # Modesetting is required.
-    modesetting.enable = true;
-
-    # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-    # Enable this if you have graphical corruption issues or application crashes after waking
-    # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead 
-    # of just the bare essentials.
-    powerManagement.enable = true;
-
-    # Fine-grained power management. Turns off GPU when not in use.
-    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    # powerManagement.finegrained = false;
-
-    # Use the NVidia open source kernel module (not to be confused with the
-    # independent third-party "nouveau" open source driver).
-    # Support is limited to the Turing and later architectures. Full list of 
-    # supported GPUs is at: 
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
-    # Only available from driver 515.43.04+
-    # Currently alpha-quality/buggy, so false is currently the recommended setting.
-    open = false;
-
-    # Enable the Nvidia settings menu,
-    # accessible via `nvidia-settings`.
-    nvidiaSettings = true;
-
-    # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
-  };
-
+  # # Enable OpenGL
+  # hardware.graphics = {
+  #   enable = true;
+  # };
+  # # Load nvidia driver for Xorg and Wayland
+  # services.xserver.videoDrivers = ["nvidia"];
+  # hardware.nvidia = {
+  #   # Modesetting is required.
+  #   modesetting.enable = true;
+  #
+  #   # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+  #   # Enable this if you have graphical corruption issues or application crashes after waking
+  #   # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead 
+  #   # of just the bare essentials.
+  #   powerManagement.enable = true;
+  #
+  #   # Fine-grained power management. Turns off GPU when not in use.
+  #   # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+  #   # powerManagement.finegrained = false;
+  #
+  #   # Use the NVidia open source kernel module (not to be confused with the
+  #   # independent third-party "nouveau" open source driver).
+  #   # Support is limited to the Turing and later architectures. Full list of 
+  #   # supported GPUs is at: 
+  #   # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
+  #   # Only available from driver 515.43.04+
+  #   # Currently alpha-quality/buggy, so false is currently the recommended setting.
+  #   open = false;
+  #
+  #   # Enable the Nvidia settings menu,
+  #   # accessible via `nvidia-settings`.
+  #   nvidiaSettings = true;
+  #
+  #   # Optionally, you may need to select the appropriate driver version for your specific GPU.
+  #   package = config.boot.kernelPackages.nvidiaPackages.beta;
+  # };
+  
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
