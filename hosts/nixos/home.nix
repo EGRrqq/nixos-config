@@ -83,7 +83,7 @@
             core.editor = "hx";
           user = {
 
-        name  = "EGRrqq";
+        name  = "EGR";
         email = "egrrqqdev@gmail.com";
           };
         aliases = {
@@ -185,14 +185,14 @@
        $env.LS_COLORS = (vivid generate ayu | str trim)
        $env.PATH = ($env.PATH | 
        split row (char esep) |
-       prepend /home/myuser/.apps |
+       prepend /home/egr/.apps |
        append /usr/bin/env
        )
         '';
         shellAliases = {
             vi = "hx";
             nano = "hx";
-            nrs = "sudo nixos-rebuild switch --flake ~/.config/nixos/#nixos";
+            nn = "sudo nixos-rebuild switch --flake ~/.config/nixos/#nixos";
         };
     };
 
