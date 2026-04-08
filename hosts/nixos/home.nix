@@ -193,6 +193,8 @@
             vi = "hx";
             nano = "hx";
             nn = "sudo nixos-rebuild switch --flake ~/.config/nixos/#nixos";
+            nd = "sudo nix-collect-garbage -d";
+            ndd = "sudo nix-env --delete-generations +3 -p /nix/var/nix/profiles/system";
         };
     };
 
