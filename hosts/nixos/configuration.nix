@@ -32,11 +32,36 @@
   # nftables
   networking.nftables.enable = true;
 
-  # Enable flakes
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
+  networking.nameservers = [
+    "1.1.1.1"
+    "8.8.8.8"
   ];
+
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
+
+  # Open ports in the firewall.
+  networking.firewall = {
+    enable = true;
+    # - 53317 for local send app
+    allowedTCPPorts = [
+      53317
+    ];
+    allowedUDPPorts = [
+      53317
+    ];
+  };
+
+  # Enable flakes
+  nix.settings = {
+    connect-timeout = 30; # Default is 5 seconds
+    stalled-download-timeout = 600; # Default is 300 seconds
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    trusted-substituters = [ "https://cache.nixos.org" ];
+  };
 
   # Enable bluetooth
   hardware.bluetooth.enable = true;
@@ -239,7 +264,7 @@
       podman-desktop
       # Dive - A useful tool for exploring docker/podman image layers
       dive
-
+      kubectl # Kubernetes command-line tool
     ];
     shell = pkgs.nushell;
   };
@@ -267,95 +292,85 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    gst_all_1.gstreamer
-    gst_all_1.gst-plugins-base
-    gst_all_1.gst-plugins-good
-    gst_all_1.gst-plugins-bad
-    gst_all_1.gst-plugins-ugly
-    gst_all_1.gst-libav
-    gst_all_1.gst-vaapi
+  environment = {
+    systemPackages = with pkgs; [
+      gst_all_1.gstreamer
+      gst_all_1.gst-plugins-base
+      gst_all_1.gst-plugins-good
+      gst_all_1.gst-plugins-bad
+      gst_all_1.gst-plugins-ugly
+      gst_all_1.gst-libav
+      gst_all_1.gst-vaapi
 
-    vscode
+      vscode
 
-    git
-    wget
-    gnumake
-    gcc15
-    unzip
-    xclip
-    ripgrep
-    fzf
-    fd
-    curlMinimal
-    tree-sitter
-    lldb_22
-    gdb
+      git
+      wget
+      gnumake
+      gcc15
+      unzip
+      xclip
+      ripgrep
+      fzf
+      fd
+      curlMinimal
+      tree-sitter
+      lldb_22
+      gdb
 
-    wrk
+      wrk
 
-    # python3
-    # python3Packages.pip
-    python314
-    python314Packages.pip
-    python314Packages.jupyterlab
+      # python3
+      # python3Packages.pip
+      python314
+      python314Packages.pip
+      python314Packages.jupyterlab
 
-    llvmPackages_22.clangNoLibcxx # the compiler (uses libstdc++ to match GCC)
-    llvmPackages_22.clang-tools
-    cpplint
+      llvmPackages_22.clangNoLibcxx # the compiler (uses libstdc++ to match GCC)
+      llvmPackages_22.clang-tools
+      cpplint
 
-    lua
-    luau
-    go
-    rustc
-    cargo
+      lua
+      luau
+      go
+      rustc
+      cargo
 
-    nodejs_24
-    corepack_24
-    # fnm
-    live-server
+      nodejs_24
+      corepack_24
+      # fnm
+      live-server
 
-    gnome-tweaks
+      gnome-tweaks
 
-    dconf-editor
-    xdotool
+      dconf-editor
+      xdotool
 
-    nushell
-    starship
-    carapace
-    vivid
+      nushell
+      starship
+      carapace
+      vivid
 
-    localsend
+      localsend
 
-    appimage-run
-    gearlever
-    mkvtoolnix
-    losslesscut-bin
-  ];
-  environment.variables = {
-    FNM_MULTISHELL_PATH = "/run/user/1000/fnm_multishells/55043_1779171250728";
-    FNM_VERSION_FILE_STRATEGY = "local";
-    FNM_DIR = "/home/egr/.local/share/fnm";
-    FNM_LOGLEVEL = "info";
-    FNM_NODE_DIST_MIRROR = "https://nodejs.org/dist";
-    FNM_COREPACK_ENABLED = "false";
-    FNM_RESOLVE_ENGINES = "true";
-    FNM_ARCH = "x64";
-    GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0/";
-    GST_PLUGIN_SYSTEM_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
-  };
+      appimage-run
+      gearlever
+      mkvtoolnix
+      losslesscut-bin
 
-  environment.sessionVariables = rec {
-    FNM_MULTISHELL_PATH = "/run/user/1000/fnm_multishells/55043_1779171250728";
-    FNM_VERSION_FILE_STRATEGY = "local";
-    FNM_DIR = "/home/egr/.local/share/fnm";
-    FNM_LOGLEVEL = "info";
-    FNM_NODE_DIST_MIRROR = "https://nodejs.org/dist";
-    FNM_COREPACK_ENABLED = "false";
-    FNM_RESOLVE_ENGINES = "true";
-    FNM_ARCH = "x64";
-    GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0/";
-    GST_PLUGIN_SYSTEM_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
+      cockpit
+      whois
+    ];
+    variables = {
+      GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0/";
+      GST_PLUGIN_SYSTEM_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
+      KIND_EXPERIMENTAL_PROVIDER = "podman";
+    };
+    sessionVariables = rec {
+      GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0/";
+      GST_PLUGIN_SYSTEM_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
+      KIND_EXPERIMENTAL_PROVIDER = "podman";
+    };
   };
 
   programs.nix-ld.enable = true;
@@ -384,13 +399,6 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # - 53317 for local send app
-  networking.firewall.allowedTCPPorts = [ 53317 ];
-  networking.firewall.allowedUDPPorts = [ 53317 ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

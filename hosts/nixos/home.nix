@@ -111,96 +111,122 @@
     enable = true;
     # for editing directly to config.nu
     extraConfig = ''
-        let carapace_completer = {|spans|
-       carapace $spans.0 nushell $spans | from json
+            $env.config = {
+             show_banner: false,
+             edit_mode: vi,
+             menus: [
+             # Configuration for default nushell menus
+             # Note the lack of source parameter
+             {
+                 name: completion_menu
+                 only_buffer_difference: false
+                 marker: "| "
+                 type: {
+                     layout: columnar
+                     columns: 4
+                     col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
+                     col_padding: 2
+                 }
+                 style: {
+                     text: green
+                     selected_text: green_reverse
+                     description_text: blue_bold
+                 }
+             }
+             {
+                 name: history_menu
+                 only_buffer_difference: true
+                 marker: "? "
+                 type: {
+                     layout: list
+                     page_size: 10
+                 }
+                 style: {
+                     text: green
+                     selected_text: green_reverse
+                     description_text: blue_bold
+                 }
+             }
+             {
+                 name: help_menu
+                 only_buffer_difference: true
+                 marker: "? "
+                 type: {
+                     layout: description
+                     columns: 4
+                     col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
+                     col_padding: 2
+                     selection_rows: 4
+                     description_rows: 10
+                 }
+                 style: {
+                     text: green
+                     selected_text: green_reverse
+                     description_text: blue_bold
+                 }
+              }
+             ],
+             completions: {
+              case_sensitive: false # case-sensitive completions
+              quick: true    # set to false to prevent auto-selecting completions
+              partial: true    # set to false to prevent partial filling of the prompt
+              algorithm: "fuzzy"    # prefix or fuzzy
+              use_ls_colors: true,
+              external: {
+              # set to false to prevent nushell looking into $env.PATH to find more suggestions
+                 enable: true 
+              # set to lower can improve completion performance at the cost of omitting some options
+                 max_results: 100 
+               }
+              }
+             }
+            $env.LS_COLORS = (vivid generate ayu | str trim)
+            $env.FNM_MULTISHELL_PATH = "/run/user/1000/fnm_multishells/55043_1779171250728"
+            $env.FNM_MULTISHELL_PATH_BIN = "/run/user/1000/fnm_multishells/55043_1779171250728/bin"
+            $env.FNM_VERSION_FILE_STRATEGY = "local"
+            $env.FNM_DIR = "/home/egr/.local/share/fnm"
+            $env.FNM_LOGLEVEL = "info"
+            $env.FNM_NODE_DIST_MIRROR = "https://nodejs.org/dist"
+            $env.FNM_COREPACK_ENABLED = "false"
+            $env.FNM_RESOLVE_ENGINES = "true"
+            $env.KIND_EXPERIMENTAL_PROVIDER = "podman"
+            $env.FNM_ARCH = "x64"
+            $env.PATH = ($env.PATH | 
+            prepend /home/egr/.apps |
+            prepend $env.FNM_MULTISHELL_PATH_BIN |
+            prepend $env.HOME |
+            prepend /.nix-profile/bin |
+            append /usr/bin/env
+            )
+
+      # Create a directory (with parents), and immediately cd into it.
+      # The --env flag propagates the PWD environment variable to the caller, which is
+      # necessary to make the directory change stick.
+      def --env mkcd [path: string] {
+          try {
+              ^mkdir -p $path   # external mkdir supports -p for parent directories
+              cd $path
+          } catch {
+              error make {msg: $"Failed to create or cd into directory: ($path)"}
+          }
       }
-      $env.config = {
-       show_banner: false,
-       edit_mode: vi,
-       menus: [
-       # Configuration for default nushell menus
-       # Note the lack of source parameter
-       {
-           name: completion_menu
-           only_buffer_difference: false
-           marker: "| "
-           type: {
-               layout: columnar
-               columns: 4
-               col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
-               col_padding: 2
-           }
-           style: {
-               text: green
-               selected_text: green_reverse
-               description_text: blue_bold
-           }
-       }
-       {
-           name: history_menu
-           only_buffer_difference: true
-           marker: "? "
-           type: {
-               layout: list
-               page_size: 10
-           }
-           style: {
-               text: green
-               selected_text: green_reverse
-               description_text: blue_bold
-           }
-       }
-       {
-           name: help_menu
-           only_buffer_difference: true
-           marker: "? "
-           type: {
-               layout: description
-               columns: 4
-               col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
-               col_padding: 2
-               selection_rows: 4
-               description_rows: 10
-           }
-           style: {
-               text: green
-               selected_text: green_reverse
-               description_text: blue_bold
-           }
-        }
-       ],
-       completions: {
-        case_sensitive: false # case-sensitive completions
-        quick: true    # set to false to prevent auto-selecting completions
-        partial: true    # set to false to prevent partial filling of the prompt
-        algorithm: "fuzzy"    # prefix or fuzzy
-        use_ls_colors: true,
-        external: {
-        # set to false to prevent nushell looking into $env.PATH to find more suggestions
-           enable: true 
-        # set to lower can improve completion performance at the cost of omitting some options
-           max_results: 100 
-           completer: $carapace_completer # check 'carapace_completer' 
-         }
-        }
-       }
-      $env.LS_COLORS = (vivid generate ayu | str trim)
-      $env.FNM_MULTISHELL_PATH = "/run/user/1000/fnm_multishells/55043_1779171250728"
-      $env.FNM_MULTISHELL_PATH_BIN = "/run/user/1000/fnm_multishells/55043_1779171250728/bin"
-      $env.FNM_VERSION_FILE_STRATEGY = "local"
-      $env.FNM_DIR = "/home/egr/.local/share/fnm"
-      $env.FNM_LOGLEVEL = "info"
-      $env.FNM_NODE_DIST_MIRROR = "https://nodejs.org/dist"
-      $env.FNM_COREPACK_ENABLED = "false"
-      $env.FNM_RESOLVE_ENGINES = "true"
-      $env.FNM_ARCH = "x64"
-      $env.PATH = ($env.PATH | 
-      prepend /home/egr/.apps |
-      prepend $env.FNM_MULTISHELL_PATH_BIN |
-      prepend $env.HOME |
-      prepend /.nix-profile/bin |
-      append /usr/bin/env
-      )
+
+      # Create a temporary directory, and cd into it.
+      # If no name is provided, a securely random temporary directory is created.
+      def --env tmpcd [
+          dirname?: string   # optional: explicit name under /tmp
+      ] {
+          try {
+              if ($dirname != null) {
+                  mkcd $"/tmp/($dirname)"   # reuse mkcd for consistent behavior
+              } else {
+                  let tmp = (^mktemp -d)     # external mktemp creates random temp dir
+                  cd $tmp
+              }
+          } catch {
+              error make {msg: "Failed to create temporary directory"}
+          }
+      }
     '';
     shellAliases = {
       vi = "hx";
@@ -208,7 +234,7 @@
       nn = "sudo nixos-rebuild switch --flake ~/.config/nixos/#nixos";
       nd = "sudo nix-collect-garbage -d";
       ndd = "sudo nix-env --delete-generations +3 -p /nix/var/nix/profiles/system";
-      zz = "sudo ~/repos/zapret-discord-youtube-linux/service.sh run -s general_alt3.bat -i any -g";
+      zz = "sudo ~/repos/zapret-discord-youtube-linux/service.sh run --config ~/repos/zapret-discord-youtube-linux/conf.env";
       deno = "/home/egr/.deno/bin/deno";
       cwd = "pwd";
     };
