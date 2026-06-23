@@ -89,7 +89,8 @@
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -151,7 +152,7 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
   # Enable sound with pipewire.
@@ -219,9 +220,9 @@
       neovim
       wezterm
       helix
-      jetbrains.webstorm
-      jetbrains.clion
-      jetbrains.rider
+      # jetbrains.webstorm
+      # jetbrains.clion
+      # jetbrains.rider
       zed-editor
       qwen-code
       gemini-cli
@@ -241,13 +242,14 @@
       obsidian
       mpv
 
+      qbittorrent
       amnezia-vpn
       wgcf
-      warp-plus
+      # warp-plus
       nftables
       zapret
 
-      bitwarden-desktop
+      # bitwarden-desktop
 
       bespokesynth
       # natron
@@ -289,6 +291,11 @@
 
   # allow broken for natron package
   nixpkgs.config.allowBroken = true;
+
+  nixpkgs.config.permittedInsecurePackages = [
+    # Electron version 39.8.10 is EOL
+    "electron-39.8.10"
+  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -338,8 +345,9 @@
 
       nodejs_24
       corepack_24
-      # fnm
       live-server
+      bun
+      deno
 
       gnome-tweaks
 

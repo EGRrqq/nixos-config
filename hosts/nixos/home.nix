@@ -34,6 +34,10 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
+    (pkgs.writeShellScriptBin "qbittorrent" ''
+      export QT_SCALE_FACTOR=1.5  # Adjust this value as needed
+      exec ${pkgs.qbittorrent}/bin/qbittorrent "$@"
+    '')
   ];
 
   # home.packages = with pkgs; [];
@@ -71,6 +75,9 @@
   #
   home.sessionVariables = {
     # EDITOR = "emacs";
+    # QT_SCALE_FACTOR = "1.5"; # Adjust this value (e.g., 1.25, 1.5, 2)
+    # QT_AUTO_SCREEN_SCALE_FACTOR = "0";
+    # QT_WAYLAND_FORCE_DPI = "192"; # 200% scale (Common for 4K or Retina displays)
   };
 
   # Let Home Manager install and manage itself.
@@ -181,19 +188,8 @@
               }
              }
             $env.LS_COLORS = (vivid generate ayu | str trim)
-            $env.FNM_MULTISHELL_PATH = "/run/user/1000/fnm_multishells/55043_1779171250728"
-            $env.FNM_MULTISHELL_PATH_BIN = "/run/user/1000/fnm_multishells/55043_1779171250728/bin"
-            $env.FNM_VERSION_FILE_STRATEGY = "local"
-            $env.FNM_DIR = "/home/egr/.local/share/fnm"
-            $env.FNM_LOGLEVEL = "info"
-            $env.FNM_NODE_DIST_MIRROR = "https://nodejs.org/dist"
-            $env.FNM_COREPACK_ENABLED = "false"
-            $env.FNM_RESOLVE_ENGINES = "true"
-            $env.KIND_EXPERIMENTAL_PROVIDER = "podman"
-            $env.FNM_ARCH = "x64"
             $env.PATH = ($env.PATH | 
-            prepend /home/egr/.apps |
-            prepend $env.FNM_MULTISHELL_PATH_BIN |
+            prepend ($env.HOME)/.apps |
             prepend $env.HOME |
             prepend /.nix-profile/bin |
             append /usr/bin/env
@@ -235,7 +231,6 @@
       nd = "sudo nix-collect-garbage -d";
       ndd = "sudo nix-env --delete-generations +3 -p /nix/var/nix/profiles/system";
       zz = "sudo ~/repos/zapret-discord-youtube-linux/service.sh run --config ~/repos/zapret-discord-youtube-linux/conf.env";
-      deno = "/home/egr/.deno/bin/deno";
       cwd = "pwd";
     };
   };
@@ -254,6 +249,14 @@
         error_symbol = "[➜](bold red)";
       };
     };
+  };
+
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    '';
   };
 
   # programs.fnm = {
