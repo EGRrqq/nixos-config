@@ -182,17 +182,18 @@
   # };
 
   # Enable Podman (Rootless, Daemonless Engine)
+  virtualisation.containers.enable = true;
   virtualisation.podman = {
     enable = true;
     # Creates a 'docker' alias for podman for CLI compatibility
     dockerCompat = true;
+    dockerSocket.enable = true; # Automatically maps the rootless socket targets
     # Required for containers under podman-compose to talk to each other
     defaultNetwork.settings.dns_enabled = true;
   };
 
   # Enable OCI container support for Podman to run containers as systemd services
   virtualisation.oci-containers.backend = "podman";
-  virtualisation.docker.daemon.settings.experimental = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.egr = {
@@ -200,7 +201,8 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      # "docker"
+      "docker"
+      "podman"
     ];
     # Configure subuids for rootless Podman (required for rootless operation)
     # This gives your user subordinate ID ranges for user namespaces.
@@ -278,6 +280,8 @@
   programs.amnezia-vpn.enable = true;
 
   home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
     # also pass inputs to home-manager modules
     extraSpecialArgs = { inherit inputs; };
     users = {
@@ -324,6 +328,8 @@
       tree-sitter
       lldb_22
       gdb
+      exiftool
+      gthumb
 
       wrk
 
