@@ -64,7 +64,15 @@
   };
 
   # Enable bluetooth
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    # powerOnBoot = true; # Powers on the Bluetooth controller at startup
+    settings = {
+      General = {
+        Experimental = true; # Enables experimental features like battery charge reporting
+      };
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Asia/Yekaterinburg";
@@ -155,6 +163,17 @@
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
+  # Enable OpenTabletDriver
+  hardware.opentabletdriver.enable = true;
+
+  # Required by OpenTabletDriver
+  hardware.uinput.enable = true;
+  boot.kernelModules = [
+    "uinput"
+    "snd-seq"
+    "snd-rawmidi"
+  ];
+
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -163,8 +182,10 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    # Enable JACK for routing MIDI and low-latency audio
+    jack.enable = true;
+    # Ensure WirePlumber is active to manage the MIDI nodes
+    wireplumber.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
@@ -174,26 +195,27 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Enable Docker (Standard Engine)
-  # virtualisation.docker = {
-  #   enable = true;
-  #   # Add your user to the docker group to run commands without sudo
-  #   enableOnBoot = true;
-  # };
-
   # Enable Podman (Rootless, Daemonless Engine)
   virtualisation.containers.enable = true;
+
+  # Enable Docker (Standard Engine)
+  virtualisation.docker = {
+    enable = true;
+    # Add your user to the docker group to run commands without sudo
+    enableOnBoot = true;
+  };
+
   virtualisation.podman = {
     enable = true;
     # Creates a 'docker' alias for podman for CLI compatibility
-    dockerCompat = true;
-    dockerSocket.enable = true; # Automatically maps the rootless socket targets
+    # dockerCompat = true;
+    # dockerSocket.enable = true; # Automatically maps the rootless socket targets
     # Required for containers under podman-compose to talk to each other
     defaultNetwork.settings.dns_enabled = true;
   };
 
   # Enable OCI container support for Podman to run containers as systemd services
-  virtualisation.oci-containers.backend = "podman";
+  virtualisation.oci-containers.backend = "docker"; # = "podman"
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.egr = {
@@ -254,12 +276,16 @@
       # bitwarden-desktop
 
       bespokesynth
+      bluez
+      bluez-tools
+
       # natron
       blender
 
       kid3
       kid3-cli
 
+      docker-compose
       # Orchestration tool for Podman (replaces docker-compose)
       podman-compose
       # Terminal UI for Podman
@@ -311,11 +337,12 @@
       gst_all_1.gst-plugins-bad
       gst_all_1.gst-plugins-ugly
       gst_all_1.gst-libav
-      gst_all_1.gst-vaapi
 
       vscode
+      code-cursor
 
       git
+      gh
       wget
       gnumake
       gcc15
@@ -338,6 +365,9 @@
       python314
       python314Packages.pip
       python314Packages.jupyterlab
+      python314Packages.markitdown
+      python314Packages.pandas
+      python314Packages.openpyxl
 
       llvmPackages_22.clangNoLibcxx # the compiler (uses libstdc++ to match GCC)
       llvmPackages_22.clang-tools
@@ -348,12 +378,14 @@
       go
       rustc
       cargo
+      php
 
       nodejs_24
       corepack_24
       live-server
       bun
       deno
+      mise
 
       gnome-tweaks
 
@@ -371,6 +403,8 @@
       gearlever
       mkvtoolnix
       losslesscut-bin
+      obs-studio
+      libreoffice
 
       cockpit
       whois
@@ -378,12 +412,14 @@
     variables = {
       GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0/";
       GST_PLUGIN_SYSTEM_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
-      KIND_EXPERIMENTAL_PROVIDER = "podman";
+      KIND_EXPERIMENTAL_PROVIDER = "docker"; # podman
+      NODE_EXTRA_CA_CERTS = "/etc/ssl/certs/ca-certificates.crt";
     };
     sessionVariables = rec {
       GST_PLUGIN_SYSTEM_PATH_1_0 = "/run/current-system/sw/lib/gstreamer-1.0/";
       GST_PLUGIN_SYSTEM_PATH = "/run/current-system/sw/lib/gstreamer-1.0/";
-      KIND_EXPERIMENTAL_PROVIDER = "podman";
+      KIND_EXPERIMENTAL_PROVIDER = "docker"; # podman
+      NODE_EXTRA_CA_CERTS = "/etc/ssl/certs/ca-certificates.crt";
     };
   };
 

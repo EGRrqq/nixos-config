@@ -38,11 +38,17 @@
       export QT_SCALE_FACTOR=1.5  # Adjust this value as needed
       exec ${pkgs.qbittorrent}/bin/qbittorrent "$@"
     '')
-
-    (pkgs.writeShellScriptBin "lm-studio" ''
-      exec ${pkgs.lmstudio}/bin/lm-studio --force-device-scale-factor=1.8 "$@"
-    '')
   ];
+
+  xdg.desktopEntries.lmstudio = {
+    name = "LM Studio";
+    exec = "${pkgs.writeShellScriptBin "lmstudio" ''
+      exec ${pkgs.lmstudio}/bin/lm-studio --force-device-scale-factor=1.8 "$@"
+    ''}/bin/lmstudio";
+    icon = "lm-studio";
+    categories = [ "Development" ];
+    terminal = false;
+  };
 
   # home.packages = with pkgs; [];
 
@@ -82,7 +88,8 @@
     # QT_SCALE_FACTOR = "1.5"; # Adjust this value (e.g., 1.25, 1.5, 2)
     # QT_AUTO_SCREEN_SCALE_FACTOR = "0";
     # QT_WAYLAND_FORCE_DPI = "192"; # 200% scale (Common for 4K or Retina displays)
-    DOCKER_HOST = "unix://\${XDG_RUNTIME_DIR}/podman/podman.sock";
+
+    # DOCKER_HOST = "unix://\${XDG_RUNTIME_DIR}/podman/podman.sock";
   };
 
   # Ensure your preferred light theme is installed
@@ -110,6 +117,27 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  # Configure SSH Client
+  # programs.ssh = {
+  #   enable = true;
+  #
+  #   # Automatically add keys to a running ssh-agent
+  #   addKeysToAgent = "yes";
+  #
+  #   # Manage specific hosts deterministically
+  #   matchBlocks = {
+  #     "github.com" = {
+  #       hostname = "github.com";
+  #       user = "git";
+  #       # Path to your private key (ensure this key exists on your system)
+  #       identityFile = "~/.ssh/id_rsa";
+  #     };
+  #   };
+  # };
+
+  # Enable the SSH Agent service to cache your passphrases
+  services.ssh-agent.enable = true;
+
   # Git setup
   programs.git = {
     enable = true;
@@ -118,7 +146,6 @@
       init.defaultBranch = "main";
       core.editor = "hx";
       user = {
-
         name = "EGR";
         email = "egrrqqdev@gmail.com";
       };
@@ -127,6 +154,18 @@
         co = "checkout";
         s = "status";
       };
+    };
+  };
+
+  # gh setup
+  programs.gh = {
+    enable = true;
+    gitCredentialHelper = {
+      enable = true;
+      hosts = [ "github.com" ];
+    };
+    settings = {
+      git_protocol = "ssh";
     };
   };
 
@@ -221,7 +260,7 @@
             prepend /.nix-profile/bin |
             append /usr/bin/env
             )
-            $env.DOCKER_HOST = $"unix://($env.XDG_RUNTIME_DIR)/podman/podman.sock"
+            # $env.DOCKER_HOST = $"unix://($env.XDG_RUNTIME_DIR)/podman/podman.sock"
 
       # Create a directory (with parents), and immediately cd into it.
       # The --env flag propagates the PWD environment variable to the caller, which is
@@ -283,9 +322,20 @@
 
   programs.bash = {
     enable = true;
+
     initExtra = ''
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+      alias vi="hx"
+      alias nano="hx"
+      alias nn="sudo nixos-rebuild switch --flake ~/.config/nixos/#nixos"
+      alias nd="sudo nix-collect-garbage -d"
+      alias ndd="sudo nix-env --delete-generations +3 -p /nix/var/nix/profiles/system"
+      alias nf="nix flake update"
+      alias nb="nixos-rebuild boot --sudo --flake ~/.config/nixos/#nixos"
+      alias zz="sudo ~/repos/zapret-discord-youtube-linux/service.sh run --config ~/repos/zapret-discord-youtube-linux/conf.env"
+      alias cwd="pwd"
     '';
   };
 
