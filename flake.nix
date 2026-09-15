@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    zapret-rust.url = "github:Sergeydigl3/zapret-discord-youtube-rust";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -19,6 +20,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/nixos/configuration.nix
+          ./flakes/zapret.nix
           inputs.home-manager.nixosModules.default
         ];
       };

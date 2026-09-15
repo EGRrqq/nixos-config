@@ -297,9 +297,12 @@
       nn = "sudo nixos-rebuild switch --flake ~/.config/nixos/#nixos";
       nd = "sudo nix-collect-garbage -d";
       ndd = "sudo nix-env --delete-generations +3 -p /nix/var/nix/profiles/system";
-      nf = "nix flake update";
-      nb = "nixos-rebuild boot --sudo --flake ~/.config/nixos/#nixos";
+      nf = "sudo nix flake update";
+      nb = "sudo nixos-rebuild boot --sudo --flake ~/.config/nixos/#nixos";
       zz = "sudo ~/repos/zapret-discord-youtube-linux/service.sh run --config ~/repos/zapret-discord-youtube-linux/conf.env";
+      zs = "sudo systemctl start zapret-rust.service";
+      ze = "sudo systemctl stop zapret-rust.service";
+      zS = "systemctl status zapret-rust.service";
       cwd = "pwd";
     };
   };
@@ -335,6 +338,9 @@
       alias nf="nix flake update"
       alias nb="nixos-rebuild boot --sudo --flake ~/.config/nixos/#nixos"
       alias zz="sudo ~/repos/zapret-discord-youtube-linux/service.sh run --config ~/repos/zapret-discord-youtube-linux/conf.env"
+      alias zs="sudo systemctl start zapret-rust.service"
+      alias ze="sudo systemctl stop zapret-rust.service"
+      alias zS="systemctl status zapret-rust.service"
       alias cwd="pwd"
     '';
   };
