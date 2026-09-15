@@ -303,6 +303,8 @@
       zs = "sudo systemctl start zapret-rust.service";
       ze = "sudo systemctl stop zapret-rust.service";
       zS = "systemctl status zapret-rust.service";
+      zl = "journalctl -u zapret-rust.service -b --no-pager -n 50"; # логи сервиса (последние 50 строк)
+      zr = "sudo systemctl restart zapret-rust.service";
       cwd = "pwd";
     };
   };
@@ -341,6 +343,8 @@
       alias zs="sudo systemctl start zapret-rust.service"
       alias ze="sudo systemctl stop zapret-rust.service"
       alias zS="systemctl status zapret-rust.service"
+      alias zl="journalctl -u zapret-rust.service -b --no-pager -n 50"
+      alias zr="sudo systemctl restart zapret-rust.service"
       alias cwd="pwd"
     '';
   };
