@@ -46,9 +46,12 @@
 
         self.nixosModules.vscode
         self.nixosModules.udev
+        self.nixosModules.containers
 
         inputs.home-manager.nixosModules.home-manager
       ];
+
+      myModules.containers.backend = "podman";
 
       home-manager = {
         useGlobalPkgs = true;

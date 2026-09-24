@@ -36,9 +36,9 @@
       fzf
       ripgrep
       tree-sitter
-      xclip
       fd
       sshs
+      wl-clipboard
 
       python314
       python314Packages.pip
@@ -67,6 +67,9 @@
       # Apps
       localsend
       bitwarden-desktop
+      swaylock
+      playerctl
+      brightnessctl
     ];
   };
 }
