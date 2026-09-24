@@ -50,6 +50,13 @@
         inputs.home-manager.nixosModules.home-manager
       ];
 
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        backupFileExtension = "hm-backup";
+        users.egr = self.homeModules.egr;
+      };
+
       # Use the systemd-boot EFI boot loader.
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;

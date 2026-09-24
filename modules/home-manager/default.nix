@@ -1,11 +1,11 @@
 { self, inputs, ... }:
 {
-  flake.modules.homeManager.egr = { pkgs, ... }: {
+  flake.homeModules.egr = { pkgs, ... }: {
     imports = [
-      self.homeModules.shell
-      self.homeModules.git
-      self.homeModules.ssh
-      self.homeModules.packages
+      ./_fragments/shell.nix
+      ./_fragments/git.nix
+      ./_fragments/ssh.nix
+      ./_fragments/packages.nix
     ];
 
     home.username = "egr";
