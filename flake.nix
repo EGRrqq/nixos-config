@@ -1,8 +1,9 @@
 {
-  description = "Nixos config flake";
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:vic/import-tree";
+    wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";
     zapret-rust.url = "github:Sergeydigl3/zapret-discord-youtube-rust";
 
     home-manager = {
@@ -11,18 +12,5 @@
     };
   };
 
-  outputs =
-    { self, nixpkgs, ... }@inputs:
-    {
-      # use "nixos", or your hostname as the name of the configuration
-      # it's a better practice than "default" shown in the video
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/nixos/configuration.nix
-          ./flakes/zapret.nix
-          inputs.home-manager.nixosModules.default
-        ];
-      };
-    };
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }
