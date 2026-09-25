@@ -6,6 +6,7 @@
       ./_fragments/git.nix
       ./_fragments/ssh.nix
       ./_fragments/packages.nix
+      ./_fragments/yazi.nix
     ];
 
     home.username = "egr";

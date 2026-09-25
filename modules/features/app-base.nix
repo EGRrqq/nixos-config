@@ -12,21 +12,16 @@
     environment.systemPackages = with pkgs; [
       xwayland-satellite
 
+      # Shell
+      nushell
+      carapace
+      vivid
+      starship
+
       # Terminals & editors
       wezterm
       neovim
-      helix
-      vscode
       brave
-
-      opencode
-      aider-chat-full
-
-      # Shell tools
-      nushell
-      starship
-      carapace
-      vivid
 
       # CLI utilities
       git
@@ -55,19 +50,16 @@
       cargo
       php
 
-      nodejs-slim_26
+      nodejs_26
       biome
       corepack
       live-server
       bun
       deno
 
-      vial
+      noctalia-shell
 
-      # Apps
-      localsend
-      bitwarden-desktop
-      swaylock
+      # Media keys
       playerctl
       brightnessctl
     ];

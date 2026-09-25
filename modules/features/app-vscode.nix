@@ -13,7 +13,7 @@
           vscode = prev.vscode.override {
             commandLineArgs = [
               "--password-store=gnome-libsecret"
-              "--enable-wayland-ime=true"
+              "--ozone-platform-hint=auto"
             ];
           };
         })
