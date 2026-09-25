@@ -475,9 +475,8 @@ let
 
       # One Light, matching the wezterm color scheme
       theme = {
-        flavor = {
-          light = "light";
-          dark = "light";
+        app = {
+          overall = { bg = "#fafafa"; };
         };
 
         mgr = {

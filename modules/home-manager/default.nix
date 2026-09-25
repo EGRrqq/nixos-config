@@ -3,6 +3,7 @@
   flake.homeModules.egr = { pkgs, ... }: {
     imports = [
       ./_fragments/shell.nix
+      ./_fragments/config-repos.nix
       ./_fragments/git.nix
       ./_fragments/ssh.nix
       ./_fragments/packages.nix

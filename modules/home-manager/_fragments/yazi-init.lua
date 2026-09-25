@@ -6,35 +6,35 @@ require("yatline"):setup({
 	padding = { inner = 1, outer = 1 },
 
 	style_a = {
-		bg = "white",
-		fg = "black",
+		bg = "#0184bc",
+		fg = "#fafafa",
 		bg_mode = {
-			normal = "white",
-			select = "brightyellow",
-			un_set = "brightred",
+			normal = "#0184bc",
+			select = "#e45649",
+			un_set = "#c18401",
 		},
 	},
-	style_b = { bg = "brightblack", fg = "brightwhite" },
-	style_c = { bg = "black", fg = "brightwhite" },
+	style_b = { bg = "#e5e5e6", fg = "#383a42" },
+	style_c = { bg = "#fafafa", fg = "#383a42" },
 
-	permissions_t_fg = "green",
-	permissions_r_fg = "yellow",
-	permissions_w_fg = "red",
-	permissions_x_fg = "cyan",
-	permissions_s_fg = "white",
+	permissions_t_fg = "#a0a1a7",
+	permissions_r_fg = "#50a14f",
+	permissions_w_fg = "#e45649",
+	permissions_x_fg = "#0997b3",
+	permissions_s_fg = "#a0a1a7",
 
 	tab_width = 20,
 
-	selected = { icon = "󰻭", fg = "yellow" },
-	copied = { icon = "", fg = "green" },
-	cut = { icon = "", fg = "red" },
+	selected = { icon = "󰻭", fg = "#c18401" },
+	copied = { icon = "", fg = "#50a14f" },
+	cut = { icon = "", fg = "#e45649" },
 
-	files = { icon = "", fg = "blue" },
-	filtereds = { icon = "", fg = "magenta" },
+	files = { icon = "", fg = "#0184bc" },
+	filtereds = { icon = "", fg = "#a626a4" },
 
-	total = { icon = "󰮍", fg = "yellow" },
-	success = { icon = "", fg = "green" },
-	failed = { icon = "", fg = "red" },
+	total = { icon = "󰮍", fg = "#c18401" },
+	success = { icon = "", fg = "#50a14f" },
+	failed = { icon = "", fg = "#e45649" },
 
 	show_background = true,
 

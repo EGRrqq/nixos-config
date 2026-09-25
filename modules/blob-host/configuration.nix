@@ -37,6 +37,7 @@
         self.nixosModules.basePackages
         self.nixosModules.gnomeKeyring
         self.nixosModules.brave
+        self.nixosModules.yazi
 
         # Users
         self.nixosModules.userEgr
